@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afrin's Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="about.jpg" alt="Afrin Jahan" class="profile-img">
+        <h1>Afrin Jahan</h1>
+        <p>Student & Junior Web Developer</p>
+        <div class="contact-info">
+            <p>📧 <a href="mailto:afrindreamy456@gmail.com">afrindreamy456@gmail.com</a> | 📞 +8801753251416</p>
+            <p>🔗 <a href="https://linkedin.com/in/afrin" target="_blank">linkedin.com/in/afrin</a> | 
+               <a href="https://github.com/hardcodedAfrin" target="_blank">github.com/hardcodedAfrin</a></p>
+        </div>
+    </header>
+
+    <div style="text-align:center; margin-bottom: 30px;">
+        <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+
+    <section class="section">
+        <h2>About Me</h2>
+        <p>I am a passionate Computer Science student at Gopalganj Science and Technology University with a strong academic background. Currently pursuing my BSc in CSE with a CGPA of 3.89, I have consistently demonstrated excellence in my studies. My journey in technology began with a perfect GPA in both SSC and HSC examinations, and I continue to expand my knowledge in web development and programming.</p>
+        <p>As an aspiring web developer, I enjoy creating responsive, user-friendly websites and applications. I'm particularly interested in front-end development and UI/UX design, and I'm constantly learning new technologies to enhance my skill set.</p>
+    </section>
+
+    <section class="section">
+        <h2>Education</h2>
+        <table class="education-table">
+            <thead>
+                <tr>
+                    <th>Degree</th>
+                    <th>Institution</th>
+                    <th>Year</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>BSc in Computer Science & Engineering</td>
+                    <td>Gopalganj Science and Technology University (GSTU), Bangladesh</td>
+                    <td>2022 - Present</td>
+                    <td>Current CGPA: 3.89 (Last Year)</td>
+                </tr>
+                <tr>
+                    <td>Higher Secondary Certificate (HSC)</td>
+                    <td>Gopalganj Government College</td>
+                    <td>2020</td>
+                    <td>GPA: 5.00/5.00</td>
+                </tr>
+                <tr>
+                    <td>Secondary School Certificate (SSC)</td>
+                    <td>Binapani Government Girls High School</td>
+                    <td>2018</td>
+                    <td>GPA: 5.00/5.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>Personal Information</h2>
+        <div style="text-align: center; margin-top: -15px;">
+            <button onclick="togglePersonalInfo()" class="info-btn">Toggle Personal Info</button>
+        </div>
+        <div class="personal-info">
+            <div class="info-item"><strong>Full Name</strong><span>Afrin Jahan</span></div>
+            <div class="info-item"><strong>Date of Birth</strong><span>25 July, 2002</span></div>
+            <div class="info-item"><strong>Blood Group</strong><span>B+ (Positive)</span></div>
+            <div class="info-item"><strong>Nationality</strong><span>Bangladeshi</span></div>
+            <div class="info-item"><strong>Religion</strong><span>Islam</span></div>
+            <div class="info-item"><strong>Marital Status</strong><span>Single</span></div>
+            <div class="info-item"><strong>Permanent Address</strong><span>Madaripur, Dhaka, Bangladesh</span></div>
+        </div>
+    </section>
+    
+    <section class="section">
+        <h2>Skills</h2>
+        <div class="skills">
+            <span class="skill">HTML5</span>
+            <span class="skill">CSS3</span>
+            <span class="skill">JavaScript</span>
+            <span class="skill">React</span>
+            <span class="skill">Bootstrap</span>
+            <span class="skill">Git</span>
+            <span class="skill">Responsive Design</span>
+            <span class="skill">UI/UX Principles</span>
+            <span class="skill">Python</span>
+            <span class="skill">C Programming</span>
+            <span class="skill">Java</span>
+            <span class="skill">Problem Solving</span>
+            <span class="skill">Team Collaboration</span>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Projects</h2>
+        <div class="project-item">
+            <h3>University Management System</h3>
+            <p><span class="date">2023</span></p>
+            <p>Developed a web-based university management system using HTML, CSS, JavaScript and PHP. The system includes features for student registration, course management, and grade tracking.</p>
+        </div>
+        <div class="project-item">
+            <h3>E-commerce Website (Academic Project)</h3>
+            <p><span class="date">2022</span></p>
+            <p>Created a responsive e-commerce platform with product listings, shopping cart functionality, and user authentication system.</p>
+        </div>
+        <div class="project-item">
+            <h3>Personal Portfolio Website</h3>
+            <p><span class="date">2021</span></p>
+            <p>Designed and developed a personal portfolio website to showcase projects and skills using pure HTML, CSS, and JavaScript.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Certifications</h2>
+        <ul>
+            <li>Programming Fundamentals with Python - Coursera (2023)</li>
+            <li>Web Development Bootcamp - Udemy (2022)</li>
+            <li>Responsive Web Design - freeCodeCamp (2021)</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Languages</h2>
+        <ul>
+            <li>Bengali (Native)</li>
+            <li>English (Fluent)</li>
+            <li>Hindi (Conversational)</li>
+        </ul>
+    </section>
+
+        <section class="section contact-section">
+    <h2>Contact Me</h2>
+    <form id="contactForm" method="POST" action="/submit">
+        <div class="contact-box">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <textarea id="message" name="message" rows="5" placeholder="Your Message..." required></textarea>
+            <button type="submit" class="submit-btn">Send</button>
+        </div>
+        <p id="responseMessage"></p>
+    </form>
+        </section>
+
+
+    <footer>
+        <p>&copy; 2023 Afrin Jahan. All rights reserved.</p>
+        <p id="lastUpdated">Last updated: October 2023</p>
+    </footer>
+
+    <!-- Buttons -->
+    <button id="toggle-theme">🌙 Toggle Theme</button>
+    <button id="scrollTopBtn">⬆</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
