@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Submissions - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .refresh-btn, .back-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .refresh-btn:hover, .back-btn:hover {
+            background: #5568d3;
+        }
+
+        .back-btn {
+            background: #6c757d;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .submissions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        .submissions-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .submissions-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .submissions-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .submissions-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .message-cell {
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .no-submissions {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .submissions-table {
+                font-size: 14px;
+            }
+
+            .submissions-table th,
+            .submissions-table td {
+                padding: 10px;
+            }
+
+            .message-cell {
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📬 Contact Form Submissions</h1>
+        <p class="subtitle">View all messages received through the contact form</p>
+
+        <div class="controls">
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="totalCount">0</h3>
+                    <p>Total Submissions</p>
+                </div>
+            </div>
+            <div>
+                <button class="refresh-btn" onclick="loadSubmissions()">🔄 Refresh</button>
+                <a href="/" class="back-btn" style="text-decoration: none; display: inline-block;">← Back to Portfolio</a>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">Loading submissions...</div>
+        <div id="submissionsContainer"></div>
+    </div>
+
+    <script>
+        async function loadSubmissions() {
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('submissionsContainer');
+            const totalCount = document.getElementById('totalCount');
+
+            loading.style.display = 'block';
+            container.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/submissions');
+                const submissions = await response.json();
+
+                totalCount.textContent = submissions.length;
+
+                if (submissions.length === 0) {
+                    container.innerHTML = '<div class="no-submissions">No submissions yet. All contact form submissions will appear here.</div>';
+                    loading.style.display = 'none';
+                    return;
+                }
+
+                let tableHTML = `
+                    <table class="submissions-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Message</th>
+                                <th>Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                submissions.forEach(submission => {
+                    const date = new Date(submission.timestamp);
+                    const formattedDate = date.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    tableHTML += `
+                        <tr>
+                            <td>#${submission.id}</td>
+                            <td><strong>${escapeHtml(submission.name)}</strong></td>
+                            <td><a href="mailto:${escapeHtml(submission.email)}">${escapeHtml(submission.email)}</a></td>
+                            <td class="message-cell">${escapeHtml(submission.message)}</td>
+                            <td class="timestamp">${formattedDate}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += '</tbody></table>';
+                container.innerHTML = tableHTML;
+                loading.style.display = 'none';
+
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                container.innerHTML = '<div class="no-submissions" style="color: red;">Error loading submissions. Please try again.</div>';
+                loading.style.display = 'none';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load submissions when page loads
+        loadSubmissions();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadSubmissions, 30000);
+    </script>
+</body>
+</html>
+

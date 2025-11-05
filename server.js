@@ -25,6 +25,11 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// Admin route to view submissions
+app.get("/admin", (req, res) => {
+    res.sendFile(path.join(__dirname, "admin.html"));
+});
+
 // GET route to fetch portfolio data
 app.get("/api/portfolio", (req, res) => {
     try {
