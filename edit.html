@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Portfolio - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #5568d3;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .item-list {
+            margin-top: 20px;
+        }
+
+        .item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .item-actions button {
+            padding: 5px 15px;
+            font-size: 12px;
+        }
+
+        .edit-form {
+            display: none;
+            background: #fff;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 2px solid #667eea;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ Edit Portfolio</h1>
+        <p class="subtitle">Modify your portfolio data. Changes will appear after refreshing the portfolio page.</p>
+
+        <div class="nav-buttons">
+            <a href="/" class="nav-btn">← View Portfolio</a>
+            <a href="/admin" class="nav-btn">📬 View Submissions</a>
+            <button class="nav-btn" onclick="loadPortfolioData()">🔄 Refresh Data</button>
+        </div>
+
+        <!-- Portfolio Header -->
+        <div class="section">
+            <h2>Portfolio Header</h2>
+            <div id="headerMessage" class="message"></div>
+            <form id="headerForm">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="headerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="headerTitle" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="headerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="headerPhone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>LinkedIn URL</label>
+                        <input type="url" id="headerLinkedIn">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub URL</label>
+                        <input type="url" id="headerGitHub">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Profile Image</label>
+                    <input type="text" id="headerImage" placeholder="e.g., about.jpg">
+                </div>
+                <button type="submit" class="btn">Update Header</button>
+            </form>
+        </div>
+
+        <!-- About Me -->
+        <div class="section">
+            <h2>About Me</h2>
+            <div id="aboutMessage" class="message"></div>
+            <form id="aboutForm">
+                <div class="form-group">
+                    <label>About Content</label>
+                    <textarea id="aboutContent" required placeholder="Enter your about section content..."></textarea>
+                </div>
+                <button type="submit" class="btn">Update About Me</button>
+            </form>
+        </div>
+
+        <!-- Education -->
+        <div class="section">
+            <h2>Education</h2>
+            <div id="educationMessage" class="message"></div>
+            <form id="educationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Degree</label>
+                        <input type="text" id="eduDegree" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Institution</label>
+                        <input type="text" id="eduInstitution" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="text" id="eduYear" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Result</label>
+                        <input type="text" id="eduResult" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Display Order</label>
+                    <input type="number" id="eduOrder" value="0" min="0">
+                </div>
+                <button type="submit" class="btn btn-success">Add Education</button>
+            </form>
+            <div id="educationList" class="item-list"></div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="section">
+            <h2>Personal Information</h2>
+            <div id="personalInfoMessage" class="message"></div>
+            <form id="personalInfoForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Field Name</label>
+                        <input type="text" id="infoFieldName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Field Value</label>
+                        <input type="text" id="infoFieldValue" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Display Order</label>
+                    <input type="number" id="infoOrder" value="0" min="0">
+                </div>
+                <button type="submit" class="btn btn-success">Add Personal Info</button>
+            </form>
+            <div id="personalInfoList" class="item-list"></div>
+        </div>
+
+        <!-- Skills -->
+        <div class="section">
+            <h2>Skills</h2>
+            <div id="skillsMessage" class="message"></div>
+            <form id="skillsForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Skill Name</label>
+                        <input type="text" id="skillName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Order</label>
+                        <input type="number" id="skillOrder" value="0" min="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Add Skill</button>
+            </form>
+            <div id="skillsList" class="item-list"></div>
+        </div>
+
+        <!-- Projects -->
+        <div class="section">
+            <h2>Projects</h2>
+            <div id="projectsMessage" class="message"></div>
+            <form id="projectsForm">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="projectTitle" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="text" id="projectYear" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Order</label>
+                        <input type="number" id="projectOrder" value="0" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="projectDescription" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Add Project</button>
+            </form>
+            <div id="projectsList" class="item-list"></div>
+        </div>
+
+        <!-- Certifications -->
+        <div class="section">
+            <h2>Certifications</h2>
+            <div id="certificationsMessage" class="message"></div>
+            <form id="certificationsForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Certification Name</label>
+                        <input type="text" id="certName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Order</label>
+                        <input type="number" id="certOrder" value="0" min="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Add Certification</button>
+            </form>
+            <div id="certificationsList" class="item-list"></div>
+        </div>
+
+        <!-- Languages -->
+        <div class="section">
+            <h2>Languages</h2>
+            <div id="languagesMessage" class="message"></div>
+            <form id="languagesForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Language Name</label>
+                        <input type="text" id="langName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Proficiency Level</label>
+                        <input type="text" id="langProficiency" placeholder="e.g., Native, Fluent">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Display Order</label>
+                    <input type="number" id="langOrder" value="0" min="0">
+                </div>
+                <button type="submit" class="btn btn-success">Add Language</button>
+            </form>
+            <div id="languagesList" class="item-list"></div>
+        </div>
+    </div>
+
+    <script>
+        let portfolioData = {};
+
+        // Load portfolio data
+        async function loadPortfolioData() {
+            try {
+                const response = await fetch('/api/portfolio');
+                portfolioData = await response.json();
+                populateForms();
+                renderLists();
+            } catch (error) {
+                console.error('Error loading portfolio data:', error);
+            }
+        }
+
+        // Populate forms with current data
+        function populateForms() {
+            // Header
+            if (portfolioData.header) {
+                document.getElementById('headerName').value = portfolioData.header.name || '';
+                document.getElementById('headerTitle').value = portfolioData.header.title || '';
+                document.getElementById('headerEmail').value = portfolioData.header.email || '';
+                document.getElementById('headerPhone').value = portfolioData.header.phone || '';
+                document.getElementById('headerLinkedIn').value = portfolioData.header.linkedin || '';
+                document.getElementById('headerGitHub').value = portfolioData.header.github || '';
+                document.getElementById('headerImage').value = portfolioData.header.profile_image || '';
+            }
+
+            // About
+            if (portfolioData.about) {
+                document.getElementById('aboutContent').value = portfolioData.about;
+            }
+        }
+
+        // Render lists
+        function renderLists() {
+            renderEducationList();
+            renderPersonalInfoList();
+            renderSkillsList();
+            renderProjectsList();
+            renderCertificationsList();
+            renderLanguagesList();
+        }
+
+        function renderEducationList() {
+            const list = document.getElementById('educationList');
+            if (!portfolioData.education || portfolioData.education.length === 0) {
+                list.innerHTML = '<p style="color: #999;">No education entries yet.</p>';
+                return;
+            }
+            list.innerHTML = portfolioData.education.map(edu => `
+                <div class="item">
+                    <div class="item-content">
+                        <strong>${edu.degree}</strong> - ${edu.institution} (${edu.year}) - ${edu.result}
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn" onclick="editEducation(${edu.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteEducation(${edu.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPersonalInfoList() {
+            const list = document.getElementById('personalInfoList');
+            if (!portfolioData.personalInfo || portfolioData.personalInfo.length === 0) {
+                list.innerHTML = '<p style="color: #999;">No personal info entries yet.</p>';
+                return;
+            }
+            list.innerHTML = portfolioData.personalInfo.map(info => `
+                <div class="item">
+                    <div class="item-content">
+                        <strong>${info.field_name}:</strong> ${info.field_value}
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn" onclick="editPersonalInfo(${info.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deletePersonalInfo(${info.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSkillsList() {
+            const list = document.getElementById('skillsList');
+            if (!portfolioData.skills || portfolioData.skills.length === 0) {
+                list.innerHTML = '<p style="color: #999;">No skills yet.</p>';
+                return;
+            }
+            list.innerHTML = portfolioData.skills.map(skill => `
+                <div class="item">
+                    <div class="item-content">
+                        <strong>${skill}</strong>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-danger" onclick="deleteSkill('${skill}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProjectsList() {
+            const list = document.getElementById('projectsList');
+            if (!portfolioData.projects || portfolioData.projects.length === 0) {
+                list.innerHTML = '<p style="color: #999;">No projects yet.</p>';
+                return;
+            }
+            list.innerHTML = portfolioData.projects.map(project => `
+                <div class="item">
+                    <div class="item-content">
+                        <strong>${project.title}</strong> (${project.year})<br>
+                        <small>${project.description}</small>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn" onclick="editProject(${project.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteProject(${project.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCertificationsList() {
+            const list = document.getElementById('certificationsList');
+            if (!portfolioData.certifications || portfolioData.certifications.length === 0) {
+                list.innerHTML = '<p style="color: #999;">No certifications yet.</p>';
+                return;
+            }
+            list.innerHTML = portfolioData.certifications.map(cert => {
+                const certName = typeof cert === 'string' ? cert : cert.certification_name;
+                const certId = typeof cert === 'object' && cert.id ? cert.id : null;
+                return `
+                    <div class="item">
+                        <div class="item-content">
+                            <strong>${certName}</strong>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn-danger" onclick="deleteCertification(${certId || 'null'})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLanguagesList() {
+            const list = document.getElementById('languagesList');
+            if (!portfolioData.languages || portfolioData.languages.length === 0) {
+                list.innerHTML = '<p style="color: #999;">No languages yet.</p>';
+                return;
+            }
+            list.innerHTML = portfolioData.languages.map(lang => `
+                <div class="item">
+                    <div class="item-content">
+                        <strong>${lang.language_name}</strong>${lang.proficiency_level ? ` (${lang.proficiency_level})` : ''}
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn" onclick="editLanguage(${lang.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteLanguage(${lang.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show message
+        function showMessage(elementId, message, type) {
+            const msgEl = document.getElementById(elementId);
+            msgEl.textContent = message;
+            msgEl.className = `message ${type}`;
+            msgEl.style.display = 'block';
+            setTimeout(() => {
+                msgEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // Form handlers
+        document.getElementById('headerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/header', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('headerName').value,
+                        title: document.getElementById('headerTitle').value,
+                        email: document.getElementById('headerEmail').value,
+                        phone: document.getElementById('headerPhone').value,
+                        linkedin: document.getElementById('headerLinkedIn').value,
+                        github: document.getElementById('headerGitHub').value,
+                        profile_image: document.getElementById('headerImage').value
+                    })
+                });
+                const data = await response.json();
+                showMessage('headerMessage', data.message || 'Header updated successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('headerMessage', 'Error updating header', 'error');
+            }
+        });
+
+        document.getElementById('aboutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/about', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: document.getElementById('aboutContent').value
+                    })
+                });
+                const data = await response.json();
+                showMessage('aboutMessage', data.message || 'About section updated successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('aboutMessage', 'Error updating about section', 'error');
+            }
+        });
+
+        document.getElementById('educationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/education', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        degree: document.getElementById('eduDegree').value,
+                        institution: document.getElementById('eduInstitution').value,
+                        year: document.getElementById('eduYear').value,
+                        result: document.getElementById('eduResult').value,
+                        display_order: parseInt(document.getElementById('eduOrder').value)
+                    })
+                });
+                const data = await response.json();
+                showMessage('educationMessage', data.message || 'Education added successfully!', 'success');
+                document.getElementById('educationForm').reset();
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('educationMessage', 'Error adding education', 'error');
+            }
+        });
+
+        document.getElementById('personalInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/personal-info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        field_name: document.getElementById('infoFieldName').value,
+                        field_value: document.getElementById('infoFieldValue').value,
+                        display_order: parseInt(document.getElementById('infoOrder').value)
+                    })
+                });
+                const data = await response.json();
+                showMessage('personalInfoMessage', data.message || 'Personal info added successfully!', 'success');
+                document.getElementById('personalInfoForm').reset();
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('personalInfoMessage', 'Error adding personal info', 'error');
+            }
+        });
+
+        document.getElementById('skillsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/skills', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        skill_name: document.getElementById('skillName').value,
+                        display_order: parseInt(document.getElementById('skillOrder').value)
+                    })
+                });
+                const data = await response.json();
+                showMessage('skillsMessage', data.message || 'Skill added successfully!', 'success');
+                document.getElementById('skillsForm').reset();
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('skillsMessage', 'Error adding skill', 'error');
+            }
+        });
+
+        document.getElementById('projectsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/projects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: document.getElementById('projectTitle').value,
+                        year: document.getElementById('projectYear').value,
+                        description: document.getElementById('projectDescription').value,
+                        display_order: parseInt(document.getElementById('projectOrder').value)
+                    })
+                });
+                const data = await response.json();
+                showMessage('projectsMessage', data.message || 'Project added successfully!', 'success');
+                document.getElementById('projectsForm').reset();
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('projectsMessage', 'Error adding project', 'error');
+            }
+        });
+
+        document.getElementById('certificationsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/certifications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        certification_name: document.getElementById('certName').value,
+                        display_order: parseInt(document.getElementById('certOrder').value)
+                    })
+                });
+                const data = await response.json();
+                showMessage('certificationsMessage', data.message || 'Certification added successfully!', 'success');
+                document.getElementById('certificationsForm').reset();
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('certificationsMessage', 'Error adding certification', 'error');
+            }
+        });
+
+        document.getElementById('languagesForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/portfolio/languages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        language_name: document.getElementById('langName').value,
+                        proficiency_level: document.getElementById('langProficiency').value,
+                        display_order: parseInt(document.getElementById('langOrder').value)
+                    })
+                });
+                const data = await response.json();
+                showMessage('languagesMessage', data.message || 'Language added successfully!', 'success');
+                document.getElementById('languagesForm').reset();
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('languagesMessage', 'Error adding language', 'error');
+            }
+        });
+
+        // Delete functions
+        async function deleteEducation(id) {
+            if (!confirm('Are you sure you want to delete this education entry?')) return;
+            try {
+                const response = await fetch(`/api/portfolio/education/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('educationMessage', data.message || 'Education deleted successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('educationMessage', 'Error deleting education', 'error');
+            }
+        }
+
+        async function deletePersonalInfo(id) {
+            if (!confirm('Are you sure you want to delete this personal info?')) return;
+            try {
+                const response = await fetch(`/api/portfolio/personal-info/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('personalInfoMessage', data.message || 'Personal info deleted successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('personalInfoMessage', 'Error deleting personal info', 'error');
+            }
+        }
+
+        async function deleteSkill(skillName) {
+            if (!confirm(`Are you sure you want to delete "${skillName}"?`)) return;
+            try {
+                const response = await fetch(`/api/portfolio/skills/${encodeURIComponent(skillName)}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('skillsMessage', data.message || 'Skill deleted successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('skillsMessage', 'Error deleting skill', 'error');
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Are you sure you want to delete this project?')) return;
+            try {
+                const response = await fetch(`/api/portfolio/projects/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('projectsMessage', data.message || 'Project deleted successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('projectsMessage', 'Error deleting project', 'error');
+            }
+        }
+
+        async function deleteCertification(id) {
+            if (!id) {
+                showMessage('certificationsMessage', 'Cannot delete: Certification ID not found', 'error');
+                return;
+            }
+            if (!confirm('Are you sure you want to delete this certification?')) return;
+            try {
+                const response = await fetch(`/api/portfolio/certifications/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('certificationsMessage', data.message || 'Certification deleted successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('certificationsMessage', 'Error deleting certification', 'error');
+            }
+        }
+
+        async function deleteLanguage(id) {
+            if (!confirm('Are you sure you want to delete this language?')) return;
+            try {
+                const response = await fetch(`/api/portfolio/languages/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                showMessage('languagesMessage', data.message || 'Language deleted successfully!', 'success');
+                loadPortfolioData();
+            } catch (error) {
+                showMessage('languagesMessage', 'Error deleting language', 'error');
+            }
+        }
+
+        // Edit functions (simplified - you can enhance these)
+        function editEducation(id) {
+            const edu = portfolioData.education.find(e => e.id === id);
+            if (edu) {
+                document.getElementById('eduDegree').value = edu.degree;
+                document.getElementById('eduInstitution').value = edu.institution;
+                document.getElementById('eduYear').value = edu.year;
+                document.getElementById('eduResult').value = edu.result;
+                document.getElementById('eduOrder').value = edu.display_order || 0;
+                
+                // Update form to edit instead of add
+                const form = document.getElementById('educationForm');
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    try {
+                        const response = await fetch(`/api/portfolio/education/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                degree: document.getElementById('eduDegree').value,
+                                institution: document.getElementById('eduInstitution').value,
+                                year: document.getElementById('eduYear').value,
+                                result: document.getElementById('eduResult').value,
+                                display_order: parseInt(document.getElementById('eduOrder').value)
+                            })
+                        });
+                        const data = await response.json();
+                        showMessage('educationMessage', data.message || 'Education updated successfully!', 'success');
+                        form.reset();
+                        form.onsubmit = arguments.callee; // Reset to original handler
+                        loadPortfolioData();
+                    } catch (error) {
+                        showMessage('educationMessage', 'Error updating education', 'error');
+                    }
+                };
+                form.querySelector('button').textContent = 'Update Education';
+            }
+        }
+
+        function editPersonalInfo(id) {
+            const info = portfolioData.personalInfo.find(i => i.id === id);
+            if (info) {
+                document.getElementById('infoFieldName').value = info.field_name;
+                document.getElementById('infoFieldValue').value = info.field_value;
+                document.getElementById('infoOrder').value = info.display_order || 0;
+                
+                const form = document.getElementById('personalInfoForm');
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    try {
+                        const response = await fetch(`/api/portfolio/personal-info/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                field_name: document.getElementById('infoFieldName').value,
+                                field_value: document.getElementById('infoFieldValue').value,
+                                display_order: parseInt(document.getElementById('infoOrder').value)
+                            })
+                        });
+                        const data = await response.json();
+                        showMessage('personalInfoMessage', data.message || 'Personal info updated successfully!', 'success');
+                        form.reset();
+                        form.onsubmit = arguments.callee;
+                        loadPortfolioData();
+                    } catch (error) {
+                        showMessage('personalInfoMessage', 'Error updating personal info', 'error');
+                    }
+                };
+                form.querySelector('button').textContent = 'Update Personal Info';
+            }
+        }
+
+        function editProject(id) {
+            const project = portfolioData.projects.find(p => p.id === id);
+            if (project) {
+                document.getElementById('projectTitle').value = project.title;
+                document.getElementById('projectYear').value = project.year;
+                document.getElementById('projectDescription').value = project.description;
+                document.getElementById('projectOrder').value = project.display_order || 0;
+                
+                const form = document.getElementById('projectsForm');
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    try {
+                        const response = await fetch(`/api/portfolio/projects/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                title: document.getElementById('projectTitle').value,
+                                year: document.getElementById('projectYear').value,
+                                description: document.getElementById('projectDescription').value,
+                                display_order: parseInt(document.getElementById('projectOrder').value)
+                            })
+                        });
+                        const data = await response.json();
+                        showMessage('projectsMessage', data.message || 'Project updated successfully!', 'success');
+                        form.reset();
+                        form.onsubmit = arguments.callee;
+                        loadPortfolioData();
+                    } catch (error) {
+                        showMessage('projectsMessage', 'Error updating project', 'error');
+                    }
+                };
+                form.querySelector('button').textContent = 'Update Project';
+            }
+        }
+
+        function editLanguage(id) {
+            const lang = portfolioData.languages.find(l => l.id === id);
+            if (lang) {
+                document.getElementById('langName').value = lang.language_name;
+                document.getElementById('langProficiency').value = lang.proficiency_level || '';
+                document.getElementById('langOrder').value = lang.display_order || 0;
+                
+                const form = document.getElementById('languagesForm');
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    try {
+                        const response = await fetch(`/api/portfolio/languages/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                language_name: document.getElementById('langName').value,
+                                proficiency_level: document.getElementById('langProficiency').value,
+                                display_order: parseInt(document.getElementById('langOrder').value)
+                            })
+                        });
+                        const data = await response.json();
+                        showMessage('languagesMessage', data.message || 'Language updated successfully!', 'success');
+                        form.reset();
+                        form.onsubmit = arguments.callee;
+                        loadPortfolioData();
+                    } catch (error) {
+                        showMessage('languagesMessage', 'Error updating language', 'error');
+                    }
+                };
+                form.querySelector('button').textContent = 'Update Language';
+            }
+        }
+
+        // Load data on page load
+        loadPortfolioData();
+    </script>
+</body>
+</html>
+

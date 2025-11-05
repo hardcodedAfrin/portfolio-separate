@@ -107,7 +107,7 @@ async function loadPortfolioData() {
                 certificationsContainer.innerHTML = `
                     <h2>Certifications</h2>
                     <ul>
-                        ${data.certifications.map(cert => `<li>${cert}</li>`).join('')}
+                        ${data.certifications.map(cert => `<li>${typeof cert === 'string' ? cert : cert.certification_name}</li>`).join('')}
                     </ul>
                 `;
             }
